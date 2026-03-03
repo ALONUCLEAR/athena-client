@@ -1,10 +1,19 @@
 <div class="header">
-  <input
-    #searchBar
-    (input)="onSearchValueChange(searchBar.value)"
-    class="search-bar"
-    placeholder="חיפוש"
-  />
+  <div class="search-bar-wrapper">
+    <input
+      [(ngModel)]="searchValue"
+      (ngModelChange)="onSearchValueChange()"
+      class="search-bar"
+      placeholder="חיפוש"
+    />
+    <div
+      [ngClass]="{ hidden: !displayAddOption }"
+      class="add-btn"
+      (click)="addSearchOption()"
+    >
+      +
+    </div>
+  </div>
 </div>
 <div class="options">
   <app-generic-search-option

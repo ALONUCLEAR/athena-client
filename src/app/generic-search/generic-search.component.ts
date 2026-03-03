@@ -16,9 +16,11 @@ export class GenericSearchComponent implements OnInit {
   @Input() options: searchOption[] = [];
   @Input() isFavoriteSearch: boolean = false;
   @Input() isMultiChoise: boolean = false;
+  @Input() addOptionCallback: (title: string) => void = () => {};
 
   searchValue = '';
   matchingOptions: searchOption[] = [];
+  displayAddOption: boolean = false;
   ngOnInit(): void {
     this.matchingOptions = this.options;
     if (this.isFavoriteSearch) {
@@ -39,13 +41,20 @@ export class GenericSearchComponent implements OnInit {
     }, 200);
   }
 
-  onSearchValueChange(input: string) {
+  onSearchValueChange() {
     this.matchingOptions = this.options.filter((option) =>
-      option.title.startsWith(input),
+      option.title.startsWith(this.searchValue),
     );
     if (this.isFavoriteSearch) {
       this.favoriteSort();
     }
+    this.displayAddOption = this.matchingOptions.length == 0;
+  }
+  addSearchOption() {
+    console.log('dd');
+    this.options.push({ title: this.searchValue, isFavorite: false });
+    this.onSearchValueChange();
+    this.addOptionCallback(this.searchValue);
   }
 
   onFavoriteOptionChange(title: string) {
