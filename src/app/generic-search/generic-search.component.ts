@@ -1,6 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewContainerRef,
+} from '@angular/core';
+import { SelectionHandler, createSelectionHandler } from './selection';
 
-export interface searchOption {
+export interface SearchOption {
   title: string;
   isFavorite?: boolean;
 }
@@ -11,62 +19,98 @@ export interface searchOption {
   styleUrls: ['./generic-search.component.less'],
 })
 export class GenericSearchComponent implements OnInit {
-  constructor() {}
+  constructor(private viewContainerRef: ViewContainerRef) {}
 
-  @Input() options: searchOption[] = [];
+  @Input() options: SearchOption[] = [];
   @Input() isFavoriteSearch: boolean = false;
-  @Input() isMultiChoise: boolean = false;
-  @Input() addOptionCallback: (title: string) => void = () => {};
+  @Input() isMultiChoice: boolean = false;
+
+  @Output() singleSelectedChoice = new EventEmitter<string>();
+  @Output() multiSelectedChoices = new EventEmitter<string[]>();
+  @Output() optionAdded = new EventEmitter<string>();
 
   searchValue = '';
-  matchingOptions: searchOption[] = [];
+  matchingOptions: SearchOption[] = [];
   displayAddOption: boolean = false;
+  selectionHandler!: SelectionHandler;
+  noSelectionChosen: boolean = false;
   ngOnInit(): void {
-    this.matchingOptions = this.options;
+    this.selectionHandler = createSelectionHandler(this.isMultiChoice);
+    this.matchingOptions = [...this.options];
     if (this.isFavoriteSearch) {
-      this.sortBasedOnFavorties();
+      this.sortBasedOnFavorites();
     }
   }
 
-  sortBasedOnFavorties() {
+  sortBasedOnFavorites(): void {
+    // Delay re-sorting so the user can see the favorite toggle before the item moves position
     setTimeout(() => {
-      const favorites: searchOption[] = this.matchingOptions
+      const favorites: SearchOption[] = this.matchingOptions
         .filter((option) => option?.isFavorite)
-        .sort();
-      const noFavorites: searchOption[] = this.matchingOptions
+        .sort((a, b) => a.title.localeCompare(b.title));
+      const noFavorites: SearchOption[] = this.matchingOptions
         .filter((option) => !option?.isFavorite)
-        .sort();
+        .sort((a, b) => a.title.localeCompare(b.title));
       this.matchingOptions = [...favorites, ...noFavorites];
-      // delay because the list updates too fast
     }, 200);
   }
 
-  sortOptions() {
+  sortOptions(): void {
     if (this.isFavoriteSearch) {
-      this.sortBasedOnFavorties();
+      this.sortBasedOnFavorites();
     } else {
-      this.matchingOptions.sort();
+      this.matchingOptions.sort((a, b) => a.title.localeCompare(b.title));
     }
   }
 
-  updateDisplayedOptions() {
-    this.matchingOptions = this.options.filter((option) =>
+  updateDisplayedOptions(): void {
+    this.matchingOptions = [...this.options.filter((option) =>
       option.title.startsWith(this.searchValue),
-    );
+    )];
     this.sortOptions();
-    this.displayAddOption = this.matchingOptions.length == 0;
+    this.displayAddOption = this.matchingOptions.length === 0;
   }
 
-  addSearchOption() {
+  addSearchOption(): void {
+    const alreadyExists = this.options.some(
+      (o) => o.title === this.searchValue,
+    );
+    if (alreadyExists) return;
     this.options.push({ title: this.searchValue, isFavorite: false });
     this.updateDisplayedOptions();
-    this.addOptionCallback(this.searchValue);
+    this.optionAdded.emit(this.searchValue);
   }
 
-  onFavoriteOptionChange(title: string) {
+  onFavoriteOptionChange(title: string): void {
     const option = this.options.find((o) => o.title === title);
     if (option) option.isFavorite = !option.isFavorite;
-    this.sortBasedOnFavorties();
-    // TODO : add a service that update the s3 I guess with this choise
+    this.sortBasedOnFavorites();
+    // TODO : add a service that update the s3 I guess with this choice
+  }
+
+  updateSelectedOptions(title: string): void {
+    this.noSelectionChosen = false;
+    this.selectionHandler.toggle(title);
+  }
+
+  trackByTitle(index: number, option: SearchOption): string {
+    return option.title;
+  }
+
+  onClose(): void {
+    this.viewContainerRef.clear();
+  }
+
+  onSelect(): void {
+    if (this.selectionHandler.isEmpty()) {
+      this.noSelectionChosen = true;
+      return;
+    }
+    const selection = this.selectionHandler.getSelection();
+    if (this.isMultiChoice) {
+      this.multiSelectedChoices.emit(selection);
+    } else {
+      this.singleSelectedChoice.emit(selection[0]);
+    }
   }
 }

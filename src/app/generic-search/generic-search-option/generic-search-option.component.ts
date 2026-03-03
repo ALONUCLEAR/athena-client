@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { searchOption } from '../generic-search.component';
+import { SearchOption } from '../generic-search.component';
 
 @Component({
   selector: 'app-generic-search-option',
@@ -7,13 +7,17 @@ import { searchOption } from '../generic-search.component';
   styleUrls: ['./generic-search-option.component.less'],
 })
 export class GenericSearchOptionComponent {
-  @Input() option!: searchOption;
+  @Input() option!: SearchOption;
   @Input() isFavoriteSearch: boolean = false;
-  @Input() isMultiChoise: boolean = false;
+  @Input() isMultiChoice: boolean = false;
   @Input() isFavorite: boolean = false;
 
-  @Output() onFavoriteChange: EventEmitter<string> = new EventEmitter<string>();
-  onStarClick() {
-    this.onFavoriteChange.emit(this.option.title);
+  @Output() favoriteChange = new EventEmitter<string>();
+  @Output() optionSelectionChanged = new EventEmitter<string>();
+  onStarClick(): void {
+    this.favoriteChange.emit(this.option.title);
+  }
+  onOptionSelectionChanged(): void {
+    this.optionSelectionChanged.emit(this.option.title);
   }
 }

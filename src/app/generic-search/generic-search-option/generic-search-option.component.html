@@ -1,5 +1,15 @@
-<input *ngIf="isMultiChoise" type="checkbox" />
-<div class="title">{{ option.title }}</div>
+<input
+  *ngIf="isMultiChoice"
+  type="checkbox"
+  (input)="onOptionSelectionChanged()"
+/>
+<div
+  [ngClass]="{ cursor: !isMultiChoice }"
+  class="title"
+  (click)="!isMultiChoice && onOptionSelectionChanged()"
+>
+  {{ option.title }}
+</div>
 <svg
   *ngIf="isFavoriteSearch"
   class="star"
