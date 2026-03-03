@@ -24,11 +24,11 @@ export class GenericSearchComponent implements OnInit {
   ngOnInit(): void {
     this.matchingOptions = this.options;
     if (this.isFavoriteSearch) {
-      this.favoriteSort();
+      this.sortBasedOnFavorties();
     }
   }
 
-  favoriteSort() {
+  sortBasedOnFavorties() {
     setTimeout(() => {
       const favorites: searchOption[] = this.matchingOptions
         .filter((option) => option?.isFavorite)
@@ -41,26 +41,32 @@ export class GenericSearchComponent implements OnInit {
     }, 200);
   }
 
-  onSearchValueChange() {
+  sortOptions() {
+    if (this.isFavoriteSearch) {
+      this.sortBasedOnFavorties();
+    } else {
+      this.matchingOptions.sort();
+    }
+  }
+
+  updateDisplayedOptions() {
     this.matchingOptions = this.options.filter((option) =>
       option.title.startsWith(this.searchValue),
     );
-    if (this.isFavoriteSearch) {
-      this.favoriteSort();
-    }
+    this.sortOptions();
     this.displayAddOption = this.matchingOptions.length == 0;
   }
+
   addSearchOption() {
-    console.log('dd');
     this.options.push({ title: this.searchValue, isFavorite: false });
-    this.onSearchValueChange();
+    this.updateDisplayedOptions();
     this.addOptionCallback(this.searchValue);
   }
 
   onFavoriteOptionChange(title: string) {
     const option = this.options.find((o) => o.title === title);
     if (option) option.isFavorite = !option.isFavorite;
-    this.favoriteSort();
+    this.sortBasedOnFavorties();
     // TODO : add a service that update the s3 I guess with this choise
   }
 }

@@ -2,7 +2,7 @@
   <div class="search-bar-wrapper">
     <input
       [(ngModel)]="searchValue"
-      (ngModelChange)="onSearchValueChange()"
+      (ngModelChange)="updateDisplayedOptions()"
       class="search-bar"
       placeholder="חיפוש"
     />
