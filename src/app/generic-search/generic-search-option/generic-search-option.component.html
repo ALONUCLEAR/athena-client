@@ -1,0 +1,27 @@
+<input
+  *ngIf="isMultiChoice"
+  type="checkbox"
+  (input)="onOptionSelectionChanged()"
+/>
+<div
+  [ngClass]="{ cursor: !isMultiChoice }"
+  class="title"
+  (click)="!isMultiChoice && onOptionSelectionChanged()"
+>
+  {{ option.title }}
+</div>
+<svg
+  *ngIf="isFavoriteSearch"
+  class="star"
+  viewBox="0 0 24 24"
+  width="20"
+  height="20"
+  (click)="onStarClick()"
+>
+  <polygon
+    points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"
+    [attr.fill]="isFavorite ? 'gold' : 'none'"
+    [attr.stroke]="isFavorite ? 'gold' : 'gray'"
+    stroke-width="2"
+  />
+</svg>

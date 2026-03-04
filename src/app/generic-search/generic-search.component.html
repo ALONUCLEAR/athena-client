@@ -1,0 +1,40 @@
+<div class="header">
+  <div class="search-bar-wrapper">
+    <input
+      [(ngModel)]="searchValue"
+      (ngModelChange)="updateDisplayedOptions()"
+      class="search-bar"
+      placeholder="חיפוש"
+    />
+    <div
+      [ngClass]="{ hidden: !displayAddOption }"
+      class="add-btn"
+      (click)="addSearchOption()"
+    >
+      +
+    </div>
+  </div>
+</div>
+<div class="options">
+  <app-generic-search-option
+    *ngFor="let option of matchingOptions; trackBy: trackByTitle"
+    [option]="option"
+    [isFavoriteSearch]="isFavoriteSearch"
+    [isMultiChoice]="isMultiChoice"
+    [isFavorite]="option.isFavorite ?? false"
+    [ngClass]="{
+      'gray-background':
+        !isMultiChoice && selectionHandler.isSelected(option.title)
+    }"
+    (favoriteChange)="onFavoriteOptionChange($event)"
+    (optionSelectionChanged)="updateSelectedOptions($event)"
+  >
+  </app-generic-search-option>
+</div>
+<div class="footer">
+  <div [ngClass]="{ hidden: !noSelectionChosen }" class="no-selection">
+    *עלייך לבחור אופציה לפני
+  </div>
+  <div (click)="onClose()" class="footer-button abort">בטל</div>
+  <div (click)="onSelect()" class="footer-button select">בחר</div>
+</div>
