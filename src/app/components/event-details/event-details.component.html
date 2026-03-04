@@ -1,0 +1,17 @@
+<div *ngIf="event">
+  <h2>{{ event.entityName }} Details</h2>
+  <pre>{{ event.data | json }}</pre>
+  
+  <button (click)="loadExtra()" [disabled]="loading">
+    {{ loading ? 'Loading...' : 'Load Extra Data' }}
+  </button>
+
+  <div *ngIf="error" class="error-msg" style="color: red; margin-top: 8px;">
+    {{ error }}
+  </div>
+
+  <div *ngIf="extraData" class="extra-data" style="margin-top: 16px; padding: 8px; background: #f0f0f0; border-radius: 4px;">
+    <h3>Extra Details:</h3>
+    <pre>{{ extraData | json }}</pre>
+  </div>
+</div>

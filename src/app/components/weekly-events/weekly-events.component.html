@@ -1,0 +1,15 @@
+<div class="controls">
+  <button (click)="prevWeek()">Previous</button>
+  <button (click)="nextWeek()">Next</button>
+</div>
+<div class="calendar-grid">
+  <!-- placeholder grid; iterate over events -->
+  <div *ngFor="let e of events" (click)="showDetails(e)">
+    {{ e.entityName }} (v{{ e.version }})
+  </div>
+</div>
+
+<div class="details-section" *ngIf="selectedEvent">
+  <button (click)="selectedEvent = null">Close Details</button>
+  <app-event-details [event]="selectedEvent"></app-event-details>
+</div>

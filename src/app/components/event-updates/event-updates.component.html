@@ -1,0 +1,27 @@
+<div class="event-updates-container">
+  <div class="header">
+    <h2>Event Updates ({{ currentDataGroup }})</h2>
+    <div class="actions">
+      <button 
+        (click)="changeRequestedData(currentDataGroup === 'eventsA' ? 'eventsB' : 'eventsA')">
+        Next Event Updates (Switch Kind)
+      </button>
+    </div>
+  </div>
+
+  <div class="event-list">
+    <div class="event-item" *ngFor="let event of events">
+      <div class="event-header">
+        <span class="entity-name">{{ event.entityName }}</span>
+        <span class="entity-id">ID: {{ event.entityId }}</span>
+      </div>
+      <div class="event-details">
+        Version: {{ event.version }}
+      </div>
+      <pre class="event-data">{{ event.data | json }}</pre>
+    </div>
+    <div class="empty-state" *ngIf="events.length === 0">
+      No events received yet for {{ currentDataGroup }}.
+    </div>
+  </div>
+</div>

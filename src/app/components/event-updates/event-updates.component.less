@@ -1,0 +1,83 @@
+.event-updates-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .actions button {
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  .event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .event-item {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px;
+      background: #fafafa;
+
+      .event-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 8px;
+
+        .entity-name {
+          color: #333;
+        }
+
+        .entity-id {
+          color: #666;
+          font-size: 0.9em;
+        }
+      }
+
+      .event-details {
+        font-size: 0.9em;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .event-data {
+        background: #eee;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        overflow-x: auto;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px;
+      color: #888;
+      font-style: italic;
+      background: #f9f9f9;
+      border-radius: 4px;
+    }
+  }
+}

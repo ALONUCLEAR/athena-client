@@ -1,0 +1,54 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+  background-color: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 24px;
+
+    a {
+      color: #ccc;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 6px;
+
+      &:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &.active {
+        color: #fff;
+        background-color: #3498db;
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+      }
+    }
+  }
+}
+
+.content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
