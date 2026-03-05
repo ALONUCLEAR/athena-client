@@ -105,14 +105,13 @@ export class SseService {
   }
 
   changeRange(startDate: string, endDate: string) {
-    if (!this.sessionId) return;
-    return this.http
-      .post(`${environment.apiUrl}/sse/change-range`, {
-        sessionId: this.sessionId,
-        startDate,
-        endDate,
-      })
-      .toPromise();
+    // close and reopen connection
+    this.closeConnection();
+    this.openConnection('mock-user', {
+      squadronIds: ['101'],
+      startDate,
+      endDate,
+    });
   }
 
   closeConnection() {
