@@ -44,7 +44,7 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
   }
 
   changeRequestedData(dataGroup: DataGroup) {
-    // for example, switch from "eventsA" to "eventsB" - this would be a change in the entity types we're subscribed to
+    // for example, switch from "eventA" to "eventB" - this would be a change in the entity types we're subscribed to
     this.currentDataGroup = dataGroup;
     this.sse.closeConnection();
     this.sse.openConnection('mock-user', {
