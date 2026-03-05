@@ -124,6 +124,7 @@ export class SseService {
 
   private scheduleReconnect(params: {
     squadronIds: string[];
+    dataGroup?: DataGroup;
     startDate?: string;
     endDate?: string;
   }) {

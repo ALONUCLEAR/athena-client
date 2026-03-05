@@ -13,7 +13,9 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
 
   events: DiffEntityResult[] = [];
-  currentStart: Date = new Date();
+  weekDays: Date[] = [];
+  today: Date = new Date();
+  currentStart: Date = this.getStartOfWeek(new Date());
   selectedEvent: DiffEntityResult | null = null;
 
   constructor(
@@ -22,10 +24,12 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.updateWeekDays();
     this.connectDefault();
-    // subscribe to state service for all entities
+    
+    // Subscribe specifically to 'week' entities
     this.subs.push(
-      this.entitiesState.entities$.subscribe((list) => {
+      this.entitiesState.getEntitiesByGroup$('week').subscribe((list) => {
         this.events = list;
       }),
     );
@@ -36,10 +40,37 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
     this.sse.closeConnection();
   }
 
+  private getStartOfWeek(date: Date): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
+    const start = new Date(d.setDate(diff));
+    start.setHours(0, 0, 0, 0);
+    return start;
+  }
+
+  private updateWeekDays() {
+    this.weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(this.currentStart);
+      d.setDate(d.getDate() + i);
+      this.weekDays.push(d);
+    }
+  }
+
+  getEventsForDay(date: Date): DiffEntityResult[] {
+    return this.events.filter(e => {
+        const entityDate = (e.data as any).date;
+        if (!entityDate) return false;
+        const d = new Date(entityDate);
+        return d.toDateString() === date.toDateString();
+    });
+  }
+
   connectDefault() {
       const start = this.currentStart.toISOString();
       const end = new Date(
-        this.currentStart.getTime() + 7 * 24 * 3600 * 1000,
+        this.currentStart.getTime() + 7 * 24 * 3600 * 1000 - 1,
       ).toISOString();
       this.sse.openConnection('mock-user', {
         squadronIds: ['101'],
@@ -47,13 +78,13 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
         endDate: end,
         dataGroup: 'week'
       });
-   
   }
 
   nextWeek() {
     this.currentStart = new Date(
       this.currentStart.getTime() + 7 * 24 * 3600 * 1000,
     );
+    this.updateWeekDays();
     this.changeRange();
   }
 
@@ -61,13 +92,14 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
     this.currentStart = new Date(
       this.currentStart.getTime() - 7 * 24 * 3600 * 1000,
     );
+    this.updateWeekDays();
     this.changeRange();
   }
 
   changeRange() {
-    const start = this.currentStart.toISOString();
+    const start = this.getStartOfWeek(this.currentStart).toISOString();
     const end = new Date(
-      this.currentStart.getTime() + 7 * 24 * 3600 * 1000,
+      this.currentStart.getTime() + 7 * 24 * 3600 * 1000 - 1,
     ).toISOString();
     this.sse.changeRange(start, end, 'week');
   }

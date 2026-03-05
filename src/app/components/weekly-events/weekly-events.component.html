@@ -1,15 +1,40 @@
-<div class="controls">
-  <button (click)="prevWeek()">Previous</button>
-  <button (click)="nextWeek()">Next</button>
-</div>
-<div class="calendar-grid">
-  <!-- placeholder grid; iterate over events -->
-  <div *ngFor="let e of events" (click)="showDetails(e)">
-    {{ e.entityName }} (v{{ e.version }})
-  </div>
-</div>
+<div class="calendar-container">
+  <header class="calendar-header">
+    <div class="nav-section">
+      <button class="nav-btn" (click)="prevWeek()">
+        <span class="icon">&larr;</span> Prev
+      </button>
+      <div class="week-label">
+        <h2>{{ currentStart | date:'MMM d' }} - {{ weekDays[6] | date:'MMM d, yyyy' }}</h2>
+        <span class="badge">Weekly Roadmap</span>
+      </div>
+      <button class="nav-btn" (click)="nextWeek()">
+        Next <span class="icon">&rarr;</span>
+      </button>
+    </div>
+  </header>
 
-<div class="details-section" *ngIf="selectedEvent">
-  <button (click)="selectedEvent = null">Close Details</button>
-  <app-event-details [event]="selectedEvent"></app-event-details>
+  <div class="calendar-grid">
+    <div class="day-column" *ngFor="let day of weekDays" [class.today]="day.toDateString() === (today | date:'fullDate')">
+      <div class="day-header">
+        <span class="day-name">{{ day | date:'EEE' }}</span>
+        <span class="day-number">{{ day | date:'d' }}</span>
+      </div>
+      <div class="events-container">
+        <div class="event-card" *ngFor="let event of getEventsForDay(day)" (click)="showDetails(event)" 
+             [class]="'importance-' + (event.data['importance'] | lowercase)">
+          <div class="event-time">{{ event.data['date'] | date:'HH:mm' }}</div>
+          <div class="event-title">{{ event.data['title'] }}</div>
+          <div class="event-status">{{ event.data['status'] }}</div>
+          <div class="card-glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-event-details 
+    *ngIf="selectedEvent" 
+    [event]="selectedEvent" 
+    (close)="selectedEvent = null">
+  </app-event-details>
 </div>

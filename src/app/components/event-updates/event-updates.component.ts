@@ -15,6 +15,7 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
 
   events: DiffEntityResult[] = [];
   currentDataGroup: DataGroup = 'eventA';
+  selectedEvent: DiffEntityResult | null = null;
 
   constructor(
     private sse: SseService,
@@ -23,17 +24,27 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.connectedDefault();
-    // subscribe to state service for all entities
-    this.subs.push(
-      this.entitiesState.entities$.subscribe((list) => {
-        this.events = list;
-      }),
-    );
+    this.subscribeToGroup();
   }
 
   ngOnDestroy() {
     this.subs.forEach((s) => s.unsubscribe());
     this.sse.closeConnection();
+  }
+
+  private subscribeToGroup() {
+    // Clear existing group-specific subscription if any
+    if (this.subs.length > 0) {
+      this.subs.forEach(s => s.unsubscribe());
+      this.subs = [];
+    }
+
+    // Subscribe to state service for filtered entities
+    this.subs.push(
+      this.entitiesState.getEntitiesByGroup$(this.currentDataGroup).subscribe((list) => {
+        this.events = list;
+      }),
+    );
   }
 
   connectedDefault() {
@@ -44,12 +55,21 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
   }
 
   changeRequestedData(dataGroup: DataGroup) {
-    // for example, switch from "eventA" to "eventB" - this would be a change in the entity types we're subscribed to
     this.currentDataGroup = dataGroup;
     this.sse.closeConnection();
     this.sse.openConnection('mock-user', {
       squadronIds: ['101'],
       dataGroup: this.currentDataGroup,
     });
+    // Update subscription to the new group
+    this.subscribeToGroup();
+  }
+
+  showDetails(event: DiffEntityResult) {
+    this.selectedEvent = event;
+  }
+
+  hideDetails() {
+    this.selectedEvent = null;
   }
 }

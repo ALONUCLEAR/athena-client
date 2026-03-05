@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { DiffEntityResult } from '../models/diff';
 
 @Injectable({ providedIn: 'root' })
@@ -10,8 +10,24 @@ export class EntitiesStateService {
   entities$: Observable<DiffEntityResult[]> =
     this.entitiesSubject.asObservable();
 
+  getEntitiesByGroup$(group: string): Observable<DiffEntityResult[]> {
+    return this.entities$.pipe(
+      map((entities) =>
+        entities.filter((e) => e.data.dataGroup === group && !e.data.deleted),
+      ),
+    );
+  }
+
   upsert(entity: DiffEntityResult) {
-    this.entitiesMap.set(entity.entityName, entity);
+    if (!entity.data?.dataGroup) {
+      console.warn('Received entity without dataGroup, ignoring:', entity);
+      return;
+    }
+    if (entity.data.deleted) {
+      this.entitiesMap.delete(entity.entityName);
+    } else {
+      this.entitiesMap.set(entity.entityName, entity);
+    }
     this.emitAll();
   }
 

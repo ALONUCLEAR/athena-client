@@ -7,9 +7,10 @@ import { AppComponent } from './app.component';
 import { WeeklyEventsComponent } from './components/weekly-events/weekly-events.component';
 import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { EventUpdatesComponent } from './components/event-updates/event-updates.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
-  declarations: [AppComponent, WeeklyEventsComponent, EventDetailsComponent, EventUpdatesComponent],
+  declarations: [AppComponent, WeeklyEventsComponent, EventDetailsComponent, EventUpdatesComponent, ModalComponent],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent],

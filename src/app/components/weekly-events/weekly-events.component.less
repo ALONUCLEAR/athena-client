@@ -1,13 +1,179 @@
-.controls {
-  margin-bottom: 1rem;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
+
+.calendar-container {
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  padding: 1.5rem;
+  background: radial-gradient(circle at top left, #1a1a2e, #16213e);
+  min-height: calc(100vh - 100px);
+  border-radius: 20px;
 }
+
+.calendar-header {
+  margin-bottom: 2rem;
+
+  .nav-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .week-label {
+    text-align: center;
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4cc9f0;
+      font-weight: 600;
+    }
+  }
+
+  .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .icon {
+      font-size: 1.2rem;
+    }
+  }
+}
+
 .calendar-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  height: 70vh;
 }
-.calendar-grid > div {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  margin: 0.25rem;
+
+.day-column {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .day-header {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .day-name {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .day-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.events-container {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+}
+
+.event-card {
+  position: relative;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  border-left: 3px solid #ccc;
+
+  &:hover {
+    transform: scale(1.03);
+    background: rgba(255, 255, 255, 0.15);
+    .card-glow {
+      opacity: 1;
+    }
+  }
+
+  .event-time {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+  }
+  .event-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-status {
+    font-size: 0.7rem;
+    display: inline-block;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &.importance-high {
+    border-left-color: #ff4d6d;
+    background: rgba(255, 77, 109, 0.1);
+  }
+  &.importance-normal {
+    border-left-color: #4cc9f0;
+    background: rgba(76, 201, 240, 0.1);
+  }
+
+  .card-glow {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
 }

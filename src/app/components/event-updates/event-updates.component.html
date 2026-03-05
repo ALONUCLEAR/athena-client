@@ -1,27 +1,45 @@
 <div class="event-updates-container">
   <div class="header">
-    <h2>Event Updates ({{ currentDataGroup }})</h2>
+    <div class="title-section">
+        <span class="badge">{{ currentDataGroup }}</span>
+        <h2>System Monitoring</h2>
+    </div>
     <div class="actions">
-      <button 
-        (click)="changeRequestedData(currentDataGroup === 'eventA' ? 'eventB' : 'eventA')">
-        Next Event Updates (Switch Kind)
+      <button class="toggle-btn"
+        (click)="changeRequestedData(currentDataGroup === 'eventA' ? 'eventB' : currentDataGroup === 'eventB' ? 'week' : 'eventA')">
+        Switch Logic: {{ currentDataGroup }} &rarr; 
+        {{ currentDataGroup === 'eventA' ? 'eventB' : currentDataGroup === 'eventB' ? 'week' : 'eventA' }}
       </button>
     </div>
   </div>
 
   <div class="event-list">
-    <div class="event-item" *ngFor="let event of events">
+    <div class="event-card" *ngFor="let event of events" (click)="showDetails(event)">
+      <div class="card-glow"></div>
       <div class="event-header">
         <span class="entity-name">{{ event.entityName }}</span>
-        <span class="entity-id">ID: {{ event.entityId }}</span>
+        <span class="version-tag">v{{ event.version }}</span>
       </div>
-      <div class="event-details">
-        Version: {{ event.version }}
+      <div class="event-preview">
+        <div class="preview-line" *ngFor="let entry of event.data | keyvalue | slice:0:3">
+           <span class="key">{{ entry.key }}:</span>
+           <span class="value">{{ entry.value }}</span>
+        </div>
       </div>
-      <pre class="event-data">{{ event.data | json }}</pre>
+      <div class="card-footer">
+          <span class="tap-hint">Tap for details</span>
+      </div>
     </div>
+    
     <div class="empty-state" *ngIf="events.length === 0">
-      No events received yet for {{ currentDataGroup }}.
+      <div class="scanning-loader"></div>
+      <p>Awaiting data streams for <strong>{{ currentDataGroup }}</strong>...</p>
     </div>
   </div>
+
+  <app-event-details 
+    *ngIf="selectedEvent" 
+    [event]="selectedEvent" 
+    (close)="hideDetails()">
+  </app-event-details>
 </div>
