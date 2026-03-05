@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { SseService } from '../../services/sse.service';
 import { DiffEntityResult } from '../../models/diff';
 import { EntitiesStateService } from '../../stores/entities-state.service';
+import { DataGroup } from '../../models/dataGroup';
 
 @Component({
   selector: 'app-event-updates',
@@ -13,7 +14,7 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
 
   events: DiffEntityResult[] = [];
-  currentDataGroup: string = 'eventsA';
+  currentDataGroup: DataGroup = 'eventA';
 
   constructor(
     private sse: SseService,
@@ -42,7 +43,7 @@ export class EventUpdatesComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeRequestedData(dataGroup: string) {
+  changeRequestedData(dataGroup: DataGroup) {
     // for example, switch from "eventsA" to "eventsB" - this would be a change in the entity types we're subscribed to
     this.currentDataGroup = dataGroup;
     this.sse.closeConnection();

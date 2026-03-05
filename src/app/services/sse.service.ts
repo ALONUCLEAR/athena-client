@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject, timer } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DiffEntityResult, SessionEvent, ChunkPayload } from '../models/diff';
 import { EntitiesStateService } from '../stores/entities-state.service';
+import { DataGroup } from '../models/dataGroup';
 
 @Injectable({ providedIn: 'root' })
 export class SseService {
@@ -38,7 +39,7 @@ export class SseService {
 
   openConnection(userId: string, params: {
     squadronIds: string[];
-    dataGroup?: string;
+    dataGroup?: DataGroup;
     startDate?: string;
     endDate?: string;
   }) {
@@ -104,11 +105,12 @@ export class SseService {
     });
   }
 
-  changeRange(startDate: string, endDate: string) {
+  changeRange(startDate: string, endDate: string, dataGroup?: DataGroup) {
     // close and reopen connection
     this.closeConnection();
     this.openConnection('mock-user', {
       squadronIds: ['101'],
+      dataGroup,
       startDate,
       endDate,
     });

@@ -45,6 +45,7 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
         squadronIds: ['101'],
         startDate: start,
         endDate: end,
+        dataGroup: 'week'
       });
    
   }
@@ -68,7 +69,7 @@ export class WeeklyEventsComponent implements OnInit, OnDestroy {
     const end = new Date(
       this.currentStart.getTime() + 7 * 24 * 3600 * 1000,
     ).toISOString();
-    this.sse.changeRange(start, end);
+    this.sse.changeRange(start, end, 'week');
   }
 
   showDetails(e: DiffEntityResult) {
