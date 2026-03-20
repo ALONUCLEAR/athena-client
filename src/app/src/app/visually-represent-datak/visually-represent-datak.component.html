@@ -1,0 +1,5 @@
+<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <plane-in-structure-box *ngFor="let planeInStructure of shelteredPlanesInStructure; let index = index;"
+        [planeInStructure]="planeInStructure" [labelPlacement]="index > 3 ? 'bottom' : 'top'">
+    </plane-in-structure-box>
+</div>

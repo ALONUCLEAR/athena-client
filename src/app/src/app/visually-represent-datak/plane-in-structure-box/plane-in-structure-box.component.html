@@ -1,0 +1,45 @@
+<ng-container *ngIf="labelPlacement === 'top'" [ngTemplateOutlet]="capName"></ng-container>
+<div class="plane-box" [ngClass]="statusClass">
+    <div class="top-section">
+        <div class="tail-num-container">
+            {{ plane?.tailNum }}
+        </div>
+
+        <span class="crewman-name" *ngFor="let member of planeInStructure.crew"> {{ member.name }} </span>
+    </div>
+
+  <div class="bottom-section">
+    <div *ngIf="planeInStructure.type !== 'readiness'" class="timeline">
+      <div class="time-point">
+        <span>{{ takeoffTime }}</span>
+      </div>
+
+      <div class="connector">
+        <div class="center-circle"></div>
+      </div>
+      
+      <div class="time-point" *ngIf="planeInStructure.timeData?.weirdMiddleThing">
+        <span class="middle-label">להתייצבות</span>
+        <span>{{ middleTime }}</span>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="time-point">
+        <span>{{ landingTime }}</span>
+      </div>
+    </div>
+
+    <div class="readiness-view" *ngIf="planeInStructure.type === 'readiness'">
+      <span class="timer-icon">🕒</span>
+      <span>{{ planeInStructure.readinessData?.readinessMinutes }}' ←</span>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="labelPlacement === 'bottom'" [ngTemplateOutlet]="capName"></ng-container> 
+
+<ng-template #capName>
+    <div class="cap-label" *ngIf="plane?.capAndShelterData?.cap as cap">
+      {{ capNamePrefix }}{{ cap.name }}
+    </div>
+</ng-template>
